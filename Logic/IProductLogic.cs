@@ -10,4 +10,5 @@ public interface IProductLogic
   Task AddNewProduct(ProductModel productToAdd);
   Task UpdateProduct(ProductModel productToUpdate);
   Task RemoveProduct(int id);
+  Task<ProductModel> InitializeProductModel();
 }
