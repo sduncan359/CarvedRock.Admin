@@ -22,12 +22,12 @@ public class CarvedRockRepository : ICarvedRockRepository
 
   public async Task<List<Product>> GetAllProductsAsync()
   {
-    return await _context.Products.ToListAsync();
+    return await _context.Products.Include(p => p.Category).ToListAsync();
   }
 
   public async Task<Product?> GetProductByIdAsync(int productId)
   {
-    return await _context.Products.FirstOrDefaultAsync(m => m.Id == productId);
+    return await _context.Products.Include(p => p.Category).FirstOrDefaultAsync(m => m.Id == productId);
   }
 
   public async Task RemoveProductAsync(int productIdToRemove)
