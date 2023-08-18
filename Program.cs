@@ -4,14 +4,20 @@ using CarvedRock.Admin.Models;
 using CarvedRock.Admin.Repository;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using CarvedRock.Admin.Areas.Identity.Data;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<AdminContext>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddValidatorsFromAssemblyContaining<ProductValidator>();
 
 builder.Services.AddDbContext<ProductContext>();
+
+builder.Services.AddDefaultIdentity<AdminUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<AdminContext>();
 builder.Services.AddScoped<ICarvedRockRepository, CarvedRockRepository>();
 builder.Services.AddScoped<IProductLogic, ProductLogic>();
 
@@ -22,6 +28,9 @@ using (var scope = app.Services.CreateScope())
   var services = scope.ServiceProvider;
   var ctx = services.GetRequiredService<ProductContext>();
   ctx.Database.Migrate();
+
+  var userCtx = services.GetRequiredService<AdminContext>();
+  userCtx.Database.Migrate();
 
   if (app.Environment.IsDevelopment())
   {
@@ -44,6 +53,7 @@ app.UseRouting();
 
 app.UseAuthorization();
 
+app.MapRazorPages();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
