@@ -11,4 +11,5 @@ public interface IProductLogic
   Task UpdateProduct(ProductModel productToUpdate);
   Task RemoveProduct(int id);
   Task<ProductModel> InitializeProductModel();
+  Task GetAvailableCategories(ProductModel productModel);
 }

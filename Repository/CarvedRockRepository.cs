@@ -1,4 +1,5 @@
 ﻿using CarvedRock.Admin.Data;
+using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 
 namespace CarvedRock.Admin.Repository;
@@ -20,9 +21,19 @@ public class CarvedRockRepository : ICarvedRockRepository
     return product;
   }
 
+  public async Task<List<Category>> GetAllCategoriesAsync()
+  {
+    return await _context.Categories.ToListAsync();
+  }
+
   public async Task<List<Product>> GetAllProductsAsync()
   {
     return await _context.Products.Include(p => p.Category).ToListAsync();
+  }
+
+  public async Task<Category?> GetCategoryByIdAsync(int categoryId)
+  {
+    return await _context.Categories.FirstOrDefaultAsync(m => m.Id == categoryId);
   }
 
   public async Task<Product?> GetProductByIdAsync(int productId)

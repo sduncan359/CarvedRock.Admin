@@ -1,6 +1,8 @@
-﻿using CarvedRock.Admin.Data;
-using CarvedRock.Admin.Logic;
+﻿using CarvedRock.Admin.Logic;
 using CarvedRock.Admin.Models;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -36,9 +38,10 @@ public class ProductsController : Controller
   }
 
   // GET: ProductsDb/Create
-  public IActionResult Create()
+  public async Task<IActionResult> Create()
   {
-    return View();
+    var model = await _logic.InitializeProductModel();
+    return View(model);
   }
 
   // POST: ProductsDb/Create
@@ -48,12 +51,23 @@ public class ProductsController : Controller
   [ValidateAntiForgeryToken]
   public async Task<IActionResult> Create(ProductModel product)
   {
-    if (ModelState.IsValid)
+    if (!ModelState.IsValid)
+    {
+      return View(product);
+    } 
+    
+    try
     {
       await _logic.AddNewProduct(product);     
       return RedirectToAction(nameof(Index));
+    }    
+    catch (ValidationException valEx)
+    {
+      var results = new ValidationResult(valEx.Errors);
+      results.AddToModelState(ModelState, null);
+      await _logic.GetAvailableCategories(product);
+      return View(product);
     }
-    return View(product);
   }
 
   // GET: ProductsDb/Edit/5
@@ -71,6 +85,8 @@ public class ProductsController : Controller
       _logger.LogInformation("Edit Details for id {id} was not found.", id);
       return View("NotFound");
     }
+
+    await _logic.GetAvailableCategories(productModel);
     return View(productModel);
   }
 

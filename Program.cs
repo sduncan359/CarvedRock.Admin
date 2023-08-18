@@ -1,12 +1,15 @@
 using CarvedRock.Admin.Data;
 using CarvedRock.Admin.Logic;
+using CarvedRock.Admin.Models;
 using CarvedRock.Admin.Repository;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddValidatorsFromAssemblyContaining<ProductValidator>();
 
 builder.Services.AddDbContext<ProductContext>();
 builder.Services.AddScoped<ICarvedRockRepository, CarvedRockRepository>();

@@ -1,6 +1,7 @@
 ﻿using CarvedRock.Admin.Data;
 using CarvedRock.Admin.Models;
 using CarvedRock.Admin.Repository;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace CarvedRock.Admin.Logic
@@ -8,14 +9,16 @@ namespace CarvedRock.Admin.Logic
   public class ProductLogic : IProductLogic
   {
     private readonly ICarvedRockRepository _repo;
+    private readonly IValidator<ProductModel> _validator;
 
-    public ProductLogic(ICarvedRockRepository repo)
+    public ProductLogic(ICarvedRockRepository repo, IValidator<ProductModel> validator)
     {
       _repo = repo;
-            
+      _validator = validator;      
     }
     public async Task AddNewProduct(ProductModel productToAdd)
     {
+      await _validator.ValidateAndThrowAsync(productToAdd);
       var productToSave = productToAdd.ToProduct();
       await _repo.AddProductAsync(productToSave);
     }
@@ -47,12 +50,20 @@ namespace CarvedRock.Admin.Logic
 
     public async Task<ProductModel> InitializeProductModel()
     {
-      return new ProductModel { AvailableCategories = await GetAvailableCategoriesFromDb() };
+      return new ProductModel 
+        { 
+          AvailableCategories = await GetAvailableCategoriesFromDb() 
+        };
+    } 
+
+    public async Task GetAvailableCategories(ProductModel productModel)
+    {
+      productModel.AvailableCategories = await GetAvailableCategoriesFromDb();     
     }
 
     private async Task<List<SelectListItem>> GetAvailableCategoriesFromDb()
     {
-      var cats = await _repo.GetAllProductsAsync();
+      var cats = await _repo.GetAllCategoriesAsync();
       var returnList = new List<SelectListItem> { new("None", "") };
       var availCatList = cats.Select(cat => new SelectListItem(cat.Name, cat.Id.ToString())).ToList();
       returnList.AddRange(availCatList);

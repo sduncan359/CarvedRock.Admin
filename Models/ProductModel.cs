@@ -17,6 +17,8 @@ public class ProductModel
   [Range(0.01, 1000.00, ErrorMessage = "Value for {0} must be between {1:C} and {2:C}")]
   public decimal Price { get; set; }
   public bool IsActive { get; set; }
+
+  [DisplayName("Category")]
   public int CategoryId { get; set; }
 
   [DisplayName("Category")]
