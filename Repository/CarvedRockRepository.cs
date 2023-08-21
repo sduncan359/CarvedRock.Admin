@@ -11,7 +11,7 @@ public class CarvedRockRepository : ICarvedRockRepository
 
   public CarvedRockRepository(ProductContext context)
   {
-      _context = context;
+    _context = context;
   }
 
   public async Task<Product> AddProductAsync(Product product)
@@ -52,7 +52,7 @@ public class CarvedRockRepository : ICarvedRockRepository
     {
       _context.Products.Remove(product);
       await _context.SaveChangesAsync();
-    }    
+    }
   }
 
   public async Task UpdateProductAsync(Product product)

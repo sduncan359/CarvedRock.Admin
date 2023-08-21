@@ -16,5 +16,5 @@ public class AdminContext : IdentityDbContext<AdminUser>
   }
 
   protected override void OnConfiguring(DbContextOptionsBuilder options)
-    => options.UseSqlite($"Data Source={_dbPath}"); 
+    => options.UseSqlite($"Data Source={_dbPath}");
 }

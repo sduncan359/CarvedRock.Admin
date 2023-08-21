@@ -3,11 +3,13 @@ using CarvedRock.Admin.Models;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using FluentValidation.Results;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace CarvedRock.Admin.Controllers;
 
+[Authorize]
 public class ProductsController : Controller
 {
   private readonly IProductLogic _logic;
@@ -30,11 +32,11 @@ public class ProductsController : Controller
   {
     var product = await _logic.GetProductById(id);
     if (product == null)
-    {      
+    {
       _logger.LogInformation("Details not found for id {id} was not found.", id);
       return View("NotFound");
-    }   
-    return View(product);    
+    }
+    return View(product);
   }
 
   // GET: ProductsDb/Create
@@ -54,13 +56,13 @@ public class ProductsController : Controller
     if (!ModelState.IsValid)
     {
       return View(product);
-    } 
-    
+    }
+
     try
     {
-      await _logic.AddNewProduct(product);     
+      await _logic.AddNewProduct(product);
       return RedirectToAction(nameof(Index));
-    }    
+    }
     catch (ValidationException valEx)
     {
       var results = new ValidationResult(valEx.Errors);
@@ -107,7 +109,7 @@ public class ProductsController : Controller
     {
       try
       {
-        await _logic.UpdateProduct(product);      
+        await _logic.UpdateProduct(product);
       }
       catch (DbUpdateConcurrencyException)
       {
@@ -130,7 +132,7 @@ public class ProductsController : Controller
   // GET: ProductsDb/Delete/5
   public async Task<IActionResult> Delete(int? id)
   {
-    if (id == null) return View("NotFound");    
+    if (id == null) return View("NotFound");
 
     var productModel = await _logic.GetProductById(id.Value);
     if (productModel == null)
@@ -147,7 +149,7 @@ public class ProductsController : Controller
   [ValidateAntiForgeryToken]
   public async Task<IActionResult> DeleteConfirmed(int id)
   {
-    await _logic.RemoveProduct(id);      
+    await _logic.RemoveProduct(id);
     return RedirectToAction(nameof(Index));
   }
 

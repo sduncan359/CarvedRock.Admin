@@ -14,7 +14,7 @@ namespace CarvedRock.Admin.Logic
     public ProductLogic(ICarvedRockRepository repo, IValidator<ProductModel> validator)
     {
       _repo = repo;
-      _validator = validator;      
+      _validator = validator;
     }
     public async Task AddNewProduct(ProductModel productToAdd)
     {
@@ -38,7 +38,7 @@ namespace CarvedRock.Admin.Logic
     }
 
     public async Task RemoveProduct(int id)
-    {      
+    {
       await _repo.RemoveProductAsync(id);
     }
 
@@ -50,15 +50,15 @@ namespace CarvedRock.Admin.Logic
 
     public async Task<ProductModel> InitializeProductModel()
     {
-      return new ProductModel 
-        { 
-          AvailableCategories = await GetAvailableCategoriesFromDb() 
-        };
-    } 
+      return new ProductModel
+      {
+        AvailableCategories = await GetAvailableCategoriesFromDb()
+      };
+    }
 
     public async Task GetAvailableCategories(ProductModel productModel)
     {
-      productModel.AvailableCategories = await GetAvailableCategoriesFromDb();     
+      productModel.AvailableCategories = await GetAvailableCategoriesFromDb();
     }
 
     private async Task<List<SelectListItem>> GetAvailableCategoriesFromDb()
