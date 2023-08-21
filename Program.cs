@@ -1,15 +1,19 @@
 using CarvedRock.Admin.Data;
 using CarvedRock.Admin.Logic;
-using CarvedRock.Admin.Models;
 using CarvedRock.Admin.Repository;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
 using CarvedRock.Admin.Areas.Identity.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<AdminContext>();
+
+builder.Services.AddDefaultIdentity<AdminUser>(options =>
+  {
+    options.SignIn.RequireConfirmedAccount = false;   
+  }
+).AddEntityFrameworkStores<AdminContext>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -17,7 +21,6 @@ builder.Services.AddValidatorsFromAssemblyContaining<ProductValidator>();
 
 builder.Services.AddDbContext<ProductContext>();
 
-builder.Services.AddDefaultIdentity<AdminUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<AdminContext>();
 builder.Services.AddScoped<ICarvedRockRepository, CarvedRockRepository>();
 builder.Services.AddScoped<IProductLogic, ProductLogic>();
 
